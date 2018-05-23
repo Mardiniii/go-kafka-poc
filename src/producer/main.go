@@ -7,7 +7,7 @@ import (
 )
 
 // Start triggers a new producer routine
-func Start() {
+func Start(msg string) {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
 	if err != nil {
 		panic(err)
@@ -29,12 +29,11 @@ func Start() {
 
 	// Produce messages to topic (asynchronously)
 	topic := "pocTopic"
-	for _, word := range []string{"We", "are", "learning", "Kafka"} {
-		p.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-			Value:          []byte(word),
-		}, nil)
-	}
+
+	p.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Value:          []byte(msg),
+	}, nil)
 
 	// Wait for message deliveries
 	p.Flush(15 * 1000)
